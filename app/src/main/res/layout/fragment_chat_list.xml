@@ -18,9 +18,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         app:fabSize="normal"
-        android:src="@mipmap/ic_backup_white_48dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/icon_play" />
 </android.support.design.widget.CoordinatorLayout>
 
 

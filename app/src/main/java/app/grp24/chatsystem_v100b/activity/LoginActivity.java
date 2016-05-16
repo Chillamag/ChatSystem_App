@@ -38,7 +38,6 @@ import java.util.ArrayList;
 
 import app.grp24.chatsystem_v100b.R;
 import app.grp24.chatsystem_v100b.fragment.ChatRoom_Frag;
-import app.grp24.chatsystem_v100b.java.IncomingReader;
 
 public class LoginActivity extends AppCompatActivity  implements View.OnClickListener{
 
@@ -57,10 +56,6 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     public static BufferedReader reader;
     public static PrintWriter writer;
 
-    public void ListenThread(){
-        Thread IncomingReader = new Thread(new IncomingReader());
-        IncomingReader.start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +75,15 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         loginBotton.setVisibility(View.VISIBLE);
         loadingBar.setVisibility(View.GONE);
 
+        socketStarer sockStart = new socketStarer();
+        sockStart.execute();
+
     }
 
 
     @Override
     public void onClick(View v) {
         if (v == loginBotton) {
-            //ListenThread();
             ChatRoom_Frag.username = myUsername.getText();
             ChatRoom_Frag.password = myPassword.getText();
 
@@ -148,10 +145,10 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         protected Void doInBackground(Void... params) {
 
             try{
-                sock = new Socket(address, port);
-                InputStreamReader streamreader = new InputStreamReader(sock.getInputStream());
-                reader = new BufferedReader(streamreader);
-                writer = new PrintWriter(sock.getOutputStream());
+                //sock = new Socket(address, port);
+                //InputStreamReader streamreader = new InputStreamReader(sock.getInputStream());
+                //reader = new BufferedReader(streamreader);
+                //writer = new PrintWriter(sock.getOutputStream());
 
                 try{
                     writer.println(ChatRoom_Frag.username + ":" + ChatRoom_Frag.password + ":Login");
@@ -172,8 +169,26 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         }
     }
 
-    public static void userAdd(String data){
-        users.add(data);
+    private class socketStarer extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try{
+                sock = new Socket(address, port);
+                InputStreamReader streamreader = new InputStreamReader(sock.getInputStream());
+                reader = new BufferedReader(streamreader);
+                writer = new PrintWriter(sock.getOutputStream());
+
+            }catch(Exception ex){
+                System.out.println("Socket error..");
+                ex.printStackTrace();
+                error(2);
+            } return null;
+        }
+        protected void onPostExecute(Void result){
+
+        }
     }
 
     private class SplashEndAnimatorListener implements Animator.AnimatorListener {
